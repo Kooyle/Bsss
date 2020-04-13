@@ -2,57 +2,35 @@ package com.evan.bs.service;
 
 import com.evan.bs.dao.UserDAO;
 import com.evan.bs.pojo.User;
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
-import org.apache.shiro.crypto.hash.SimpleHash;
+import com.evan.bs.result.ResultFactory;
+import com.evan.bs.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class UserService {
     @Autowired
     UserDAO userDAO;
 
-    public List<User> list() {
-        Sort sort = new Sort(Sort.Direction.ASC, "id");
-        return userDAO.findAll(sort);
-    }
+    public Result register(User user){
 
-    public boolean isExist(String username) {
-        User user = getByName(username);
-        return null!=user;
-    }
-    public User findByUserName(String username) {
-        return userDAO.findByUsername(username);
-    }
-
-    public User getByName(String username) {
-        return userDAO.findByUsername(username);
-    }
-
-    public User get(String username, String password){
-        return userDAO.getByUsernameAndPassword(username, password);
-    }
-
-    public void add(User user) {
-        userDAO.save(user);
-    }
-
-    public boolean resetPassword(User user) {
-        User userInDB = userDAO.findByUsername(user.getUsername());
-        String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-        int times = 2;
-        userInDB.setSalt(salt);
-        String encodedPassword = new SimpleHash("md5", "123", salt, times).toString();
-        userInDB.setPassword(encodedPassword);
-        try {
-            userDAO.save(userInDB);
-        } catch (IllegalArgumentException e) {
-            return false;
+        if(userDAO.findByUsername(user.getUsername())!=null){
+            String message = "用户名已被使用";
+            return ResultFactory.buildFailResult(message);
         }
-        return true;
+        else {
+            user.setUsername(user.getUsername());
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            user.setPerms(user.getPerms());
+            userDAO.save(user);
+            return ResultFactory.buildSuccessResult(user);
+        }
+
+
     }
+
+
 
 }

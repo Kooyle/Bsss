@@ -1,3 +1,4 @@
+/*
 package com.evan.bs.config;
 
 
@@ -80,3 +81,4 @@ public class ShiroConfiguration {
         return authorizationAttributeSourceAdvisor;
     }
 }
+*/

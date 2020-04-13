@@ -1,3 +1,4 @@
+/*
 package com.evan.bs.realm;
 
 import com.evan.bs.pojo.User;
@@ -42,3 +43,4 @@ public class BSRealm extends AuthorizingRealm {
     }
 }
 
+*/

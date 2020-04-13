@@ -1,9 +1,15 @@
 package com.evan.bs.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 
 @Entity
 @Table(name = "usermsg")
@@ -13,7 +19,8 @@ public class Usermsg {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uid")
 
-   private int uid;
+    private Integer uid;
+    private String username;
     private Date date1;
     private String name;
     private String sex;
@@ -32,7 +39,7 @@ public class Usermsg {
     private String workexp3;
 
 
-   public Date getDate1() {
+/*   public Date getDate1() {
         return date1;
     }
 
@@ -170,5 +177,5 @@ public class Usermsg {
 
     public void setWorkexp3(String workexp3) {
         this.workexp3 = workexp3;
-    }
+    }*/
 }
