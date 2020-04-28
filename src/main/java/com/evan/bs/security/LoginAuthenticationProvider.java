@@ -43,8 +43,6 @@ public class LoginAuthenticationProvider extends DaoAuthenticationProvider {
             if (!this.passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
                 this.logger.debug("Authentication failed: password does not match stored value");
                 throw new BadCredentialsException(this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-            }else {
-
             }
         }
     }

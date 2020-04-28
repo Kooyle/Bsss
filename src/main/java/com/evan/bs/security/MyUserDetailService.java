@@ -27,8 +27,10 @@ public class MyUserDetailService implements UserDetailsService {
         //从数据库根据用户名获取用户信息
         User user = userDAO.findByUsername(username);
         //创建一个新的UserDetails对象,使用自己定义的实现类,以便实现扩展的session
-        if (user == null)
+        if (user == null){
+            String message = "账号密码错误";
             throw new BadCredentialsException("帐号不存在，请重新输入");
+        }
 
 
 

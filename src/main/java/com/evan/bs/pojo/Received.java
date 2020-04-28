@@ -1,34 +1,39 @@
 package com.evan.bs.pojo;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
 import javax.persistence.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
-@Table(name = "user")
+@Table(name = "received")
 @JsonIgnoreProperties({"handler","hibernateLazyInitialize"})
 @Component
-public class User {
+public class Received {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "reid")
 
-    private Integer id;
+    private Integer reid;
 
-    private String username;
+    private Integer cid;
 
-    private String password;
+    private Integer uid;
 
-    private String perms;
+    private Integer rid;
 
+    private String result;
 
+    private String msg;
+
+    private String state;
+
+    private String resultstate;
 }

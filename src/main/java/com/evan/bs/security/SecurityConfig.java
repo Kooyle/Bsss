@@ -2,6 +2,7 @@ package com.evan.bs.security;
 
 import com.evan.bs.dao.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.devtools.restart.FailureHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,30 +24,52 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserDAO userDAO;
+    @Autowired
+    private MyAuthenticationSuccessHandler authenticationSuccessHandler;
+    @Autowired
+    private MyAuthenticationFailHandler authenticationFailHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/login","/index").permitAll()
-                                .antMatchers("/admin/**").hasRole("admin")
-                                .antMatchers("/person/**").hasRole("person")
-                                .antMatchers("/company/**").hasRole("company")
+        http.authorizeRequests().antMatchers("/login","/adminlogin").permitAll()
+                              .antMatchers("/admin/**").hasRole("admin")
+                               .antMatchers("/company/**").hasRole("company")
+                               .antMatchers("/person/**").hasRole("person")
                                 .and()
                                 .formLogin()
-                                .usernameParameter("username")
-                                .passwordParameter("password")
+//                                .loginProcessingUrl("/api/login")
+//                                .usernameParameter("username")
+//                                .passwordParameter("password")
                                 //登陆页面
-                                .loginPage("/login")
+//                                .loginPage("/api/login")
                                 //登陆表单提交请求
-                                .loginProcessingUrl("/login")
+
                                 //登陆失败跳转
+//                                .successHandler(authenticationSuccessHandler)
+//                                .failureHandler(authenticationFailHandler)
                                // .failureUrl("/tologin?error=true")
-                               .defaultSuccessUrl("/index")
                                 .and()
-                                .logout().logoutSuccessUrl("/login")
-                                .and().headers().frameOptions().sameOrigin();
+//                                .logout().logoutSuccessUrl("/api/login")
+//                                .and()
+                                .headers().frameOptions().sameOrigin();
+        http.addFilterAt(customAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class);
         //允许跨域
+        http.cors();
         http.csrf().disable();
     }
+    @Bean
+    CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
+        filter.setAuthenticationSuccessHandler(new MyAuthenticationSuccessHandler());
+        filter.setAuthenticationFailureHandler(new MyAuthenticationFailHandler());
+        filter.setFilterProcessesUrl("/api/login");
+
+        //这句很关键，重用WebSecurityConfigurerAdapter配置的AuthenticationManager，不然要自己组装AuthenticationManager
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
+    }
+
     //加密 BCrypt
     @Bean
     public PasswordEncoder passwordEncoder(){

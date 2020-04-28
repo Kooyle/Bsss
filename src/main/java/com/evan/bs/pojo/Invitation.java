@@ -7,28 +7,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
 import javax.persistence.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
-@Table(name = "user")
+@Table(name = "invitation")
 @JsonIgnoreProperties({"handler","hibernateLazyInitialize"})
 @Component
-public class User {
+public class Invitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "nid")
+    private Integer nid;
 
-    private Integer id;
+    private Integer cid;
 
-    private String username;
+    private Integer uid;
 
-    private String password;
+    private Integer rid;
 
-    private String perms;
+    private String invitestate;
 
+    private String invitemsg;
 
+    private String inviteresult;
 }

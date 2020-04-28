@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Console;
 
@@ -22,10 +23,12 @@ public class LoginController {
 
     @RequestMapping("api/register")
     @ResponseBody
-    public Result register(@RequestBody User user){
+    public Result register(@RequestBody User user,HttpServletRequest request){
+
 
         return userService.register(user);
     }
+
  /*   @CrossOrigin
     @PostMapping("api/register")
     @ResponseBody
